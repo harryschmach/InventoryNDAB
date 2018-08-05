@@ -3,4 +3,12 @@
     <string name="action_settings">Settings</string>
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
     <string name="action_delete_all_entries">Delete All Entries</string>
+    <string name="product_name_str_hint">Product Name</string>
+    <string name="product_information_str_label">Product Information</string>
+    <string name="product_price_str_hint">Product Price</string>
+    <string name="product_quantity_str_hint">Product Quantity</string>
+    <string name="supplier_information_str_label">Supplier Information</string>
+    <string name="supplier_name_str_hint">Supplier Name</string>
+    <string name="title_activity_editor_add_product">EditorAddProductActivity</string>
+    <string name="supplier_phone_str_hint">Supplier Phone</string>
 </resources>
