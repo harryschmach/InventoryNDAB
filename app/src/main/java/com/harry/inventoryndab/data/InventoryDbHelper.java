@@ -3,6 +3,7 @@ package com.harry.inventoryndab.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import static com.harry.inventoryndab.data.ProductContract.*;
 
@@ -46,6 +47,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_PPRODUCTS_TABLE);
+        Log.v(LOG_TAG, SQL_CREATE_PPRODUCTS_TABLE);
     }
 
     /**
