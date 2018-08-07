@@ -11,4 +11,6 @@
     <string name="supplier_name_str_hint">Supplier Name</string>
     <string name="title_activity_editor_add_product">EditorAddProductActivity</string>
     <string name="supplier_phone_str_hint">Supplier Phone</string>
+    <string name="action_save_data">Save</string>
+    <string name="action_delete_all">Clear All</string>
 </resources>
