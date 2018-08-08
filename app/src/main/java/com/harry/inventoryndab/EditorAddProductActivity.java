@@ -76,7 +76,7 @@ public class EditorAddProductActivity extends AppCompatActivity {
         values.put(ProductEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
         values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneString);
 
-        // Insert a new row for pet in the database, returning the ID of that new row.
+        // Insert a new row for Product in the database, returning the ID of that new row.
         long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
 
         // Show a toast message depending on whether or not the insertion was successful
@@ -103,14 +103,10 @@ public class EditorAddProductActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_insert_editor_data:
-                // Save pet to database
+                // Save Product to database
                 insertProduct();
                 // Exit activity
                 finish();
-                return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete_all_entries:
-                // Do nothing for now
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:

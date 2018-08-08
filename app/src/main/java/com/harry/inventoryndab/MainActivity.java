@@ -141,8 +141,7 @@ public class MainActivity extends AppCompatActivity {
         // Gets the database in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        // Create a ContentValues object where column names are the keys,
-        // and Toto's pet attributes are the values.
+        // Create dummy book to insert for testing
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, "The Great Gatzuby");
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, 599);
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, "8583218970");
 
         // Insert a new row for The Great Gatzuby in the database, returning the ID of that new row.
-        // The first argument for db.insert() is the pets table name.
+        // The first argument for db.insert() is the table name.
         // The second argument provides the name of a column in which the framework
         // can insert NULL in the event that the ContentValues is empty (if
         // this is set to "null", then the framework will not insert a row when
@@ -178,10 +177,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_insert_dummy_data:
                 insertDummyProduct();
                 displayDatabaseInfo();
-                return true;
-            // Respond to a click on the "Delete all entries" menu option
-            case R.id.action_delete_all_entries:
-                // Do nothing for now
                 return true;
         }
 
