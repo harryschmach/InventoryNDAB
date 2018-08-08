@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Temporary helper method to display information in the onscreen TextView about the state of
-     * the pets database.
+     * Helper method to display information in the onscreen TextView about the state of
+     * the database.
      */
     private void displayDatabaseInfo() {
         // Create and/or open a database to read from it
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             // Create a header in the Text View that looks like this:
             //
             // The products table contains <number of rows in Cursor> products.
-            // _id - name - price - qunatity - supplierName - supplierPhone
+            // _id - name - price - quantity - supplierName - supplierPhone
             //
             // In the while loop below, iterate through the rows of the cursor and display
             // the information from each column in this order.
@@ -113,15 +113,15 @@ public class MainActivity extends AppCompatActivity {
                 int currentID = cursor.getInt(idColumnIndex);
                 String currentName = cursor.getString(nameColumnIndex);
                 int currentPrice = cursor.getInt(priceColumnIndex);
-                int currentQuntity = cursor.getInt(quantityColumnIndex);
+                int currentQuantity = cursor.getInt(quantityColumnIndex);
                 String currentSupplierName = cursor.getString(supplierNameColumnIndex);
-                int currentSupplierPhone = cursor.getInt(supplierPhoneColumnIndex);
+                String currentSupplierPhone = cursor.getString(supplierPhoneColumnIndex);
 
                 // Display the values from each column of the current row in the cursor in the TextView
                 displayView.append(("\n" + currentID + " - " +
                         currentName + " - " +
                         currentPrice + " - " +
-                        currentQuntity + " - " +
+                        currentQuantity + " - " +
                         currentSupplierName + " - " +
                         currentSupplierPhone
                 ));
@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Helper method to insert hardcoded product data into the database. For debugging purposes only.
+     * Helper method to insert hardcoded product data into the database. For testing quick insertion
+     * only.
      */
     private void insertDummyProduct() {
         // Gets the database in write mode
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, 599);
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, 2);
         values.put(ProductEntry.COLUMN_SUPPLIER_NAME, "TatteredPages");
-        values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, 858321897);
+        values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, "8583218970");
 
         // Insert a new row for The Great Gatzuby in the database, returning the ID of that new row.
         // The first argument for db.insert() is the pets table name.

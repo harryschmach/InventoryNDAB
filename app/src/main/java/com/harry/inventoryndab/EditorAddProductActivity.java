@@ -60,8 +60,6 @@ public class EditorAddProductActivity extends AppCompatActivity {
         int productQuantity = Integer.parseInt(productQuantString);
         String supplierNameString = mSupplierName.getText().toString().trim();
         String supplierPhoneString = mSupplierPhone.getText().toString().trim();
-//        int supplierPhone = Integer.parseInt(supplierPhoneString);
-
 
         // Create database helper
         InventoryDbHelper mDbHelper = new InventoryDbHelper(this);
