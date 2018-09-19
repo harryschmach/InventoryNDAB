@@ -1,8 +1,21 @@
 package com.harry.inventoryndab.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class ProductContract {
+
+    // Universal Content Authority for URIs
+    public static final String CONTENT_AUTHORITY = "com.harry.inventoryndab";
+
+    // Base URI to build on
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    // Table name to add to URI
+    public static final String PATH_PRODUCTS = "products";
+
+    // Wild card for the URI
+    public static final String PATH_PRODUCT_SINGULAR = "products/#";
 
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
@@ -13,6 +26,9 @@ public final class ProductContract {
      * Each entry in the table represents a single product.
      */
     public static final class ProductEntry implements BaseColumns {
+
+        // Full appended content URI
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
 
         /** Name of database table for products */
         public final static String TABLE_NAME = "products";

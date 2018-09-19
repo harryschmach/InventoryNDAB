@@ -28,6 +28,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.harry.inventoryndab.MainActivity" />
         </activity>
+        <provider
+            android:name=".data.ProductProvider"
+            android:authorities="com.harry.inventoryndab"
+            android:exported="false" />
     </application>
 
 </manifest>
