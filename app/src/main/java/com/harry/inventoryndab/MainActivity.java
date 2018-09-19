@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.harry.inventoryndab.data.InventoryDbHelper;
+
+import java.net.URI;
+import java.security.Provider;
 
 import static com.harry.inventoryndab.data.ProductContract.*;
 
@@ -56,9 +60,6 @@ public class MainActivity extends AppCompatActivity {
      * the database.
      */
     private void displayDatabaseInfo() {
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -70,15 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER
         };
 
-        // Perform a query on the pets table
-        Cursor cursor = db.query(
-                ProductEntry.TABLE_NAME,   // The table to query
-                projection,            // The columns to return
-                null,                  // The columns for the WHERE clause
-                null,                  // The values for the WHERE clause
-                null,                  // Don't group the rows
-                null,                  // Don't filter by row groups
-                null);                   // The sort order
+        // Perform a query on the prodcut table using the Content URI
+        Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
 
         TextView displayView = findViewById(R.id.sql_table_tv);
 
@@ -129,7 +127,10 @@ public class MainActivity extends AppCompatActivity {
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.
-            cursor.close();
+
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 
@@ -138,9 +139,6 @@ public class MainActivity extends AppCompatActivity {
      * only.
      */
     private void insertDummyProduct() {
-        // Gets the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create dummy book to insert for testing
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, "The Great Gatzuby");
@@ -155,8 +153,12 @@ public class MainActivity extends AppCompatActivity {
         // can insert NULL in the event that the ContentValues is empty (if
         // this is set to "null", then the framework will not insert a row when
         // there are no values).
+
         // The third argument is the ContentValues object containing the info for the data inserted.
-        long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
+
+        // Calling the provider to do the insertion
+        Uri returnedUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+
         Log.v(LOG_TAG, values.toString());
     }
 

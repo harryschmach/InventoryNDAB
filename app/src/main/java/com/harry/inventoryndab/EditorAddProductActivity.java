@@ -2,6 +2,7 @@ package com.harry.inventoryndab;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -55,17 +56,11 @@ public class EditorAddProductActivity extends AppCompatActivity {
         // Use trim to eliminate leading or trailing white space
         String productNameString = mProductName.getText().toString().trim();
         String productPriceString = mProductPrice.getText().toString().trim();
-        float productPrice = Float.parseFloat(productPriceString);
+        double productPrice = Double.parseDouble(productPriceString);
         String productQuantString = mProductQuantity.getText().toString().trim();
         int productQuantity = Integer.parseInt(productQuantString);
         String supplierNameString = mSupplierName.getText().toString().trim();
         String supplierPhoneString = mSupplierPhone.getText().toString().trim();
-
-        // Create database helper
-        InventoryDbHelper mDbHelper = new InventoryDbHelper(this);
-
-        // Gets the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a ContentValues object where column names are the keys,
         // and product attributes from the editor are the values.
@@ -76,16 +71,18 @@ public class EditorAddProductActivity extends AppCompatActivity {
         values.put(ProductEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
         values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneString);
 
-        // Insert a new row for Product in the database, returning the ID of that new row.
-        long newRowId = db.insert(ProductEntry.TABLE_NAME, null, values);
+        // Insert a new row for Product in the database, returning the Uri of that new row.
+        Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
 
         // Show a toast message depending on whether or not the insertion was successful
-        if (newRowId == -1) {
-            // If the row ID is -1, then there was an error with insertion.
-            Toast.makeText(this, "Error with saving product", Toast.LENGTH_SHORT).show();
+        if (newUri == null) {
+            // If the new content URI is null, then there was an error with insertion.
+            Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                    Toast.LENGTH_SHORT).show();
         } else {
-            // Otherwise, the insertion was successful and we can display a toast with the row ID.
-            Toast.makeText(this, "Product saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+            // Otherwise, the insertion was successful and we can toast its success!
+            Toast.makeText(this, getString(R.string.editor_insert_product_successful),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -13,4 +13,6 @@
     <string name="supplier_phone_str_hint">Supplier Phone</string>
     <string name="action_save_data">Save</string>
     <string name="action_delete_all">Clear All</string>
+    <string name="editor_insert_product_failed">Failed to insert Product</string>
+    <string name="editor_insert_product_successful">New product inserted</string>
 </resources>

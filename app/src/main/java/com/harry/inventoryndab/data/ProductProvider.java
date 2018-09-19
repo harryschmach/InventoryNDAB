@@ -7,8 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-
-import com.harry.inventoryndab.data.InventoryDbHelper;
+import android.util.Log;
 
 public class ProductProvider extends ContentProvider {
 
@@ -80,7 +79,7 @@ public class ProductProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
-        return null;
+        return cursor;
     }
 
     /**
@@ -88,7 +87,55 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                return insertProduct(uri, contentValues);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Insert a product into the database with the given content values. Return the new content URI
+     * for that specific row in the database.
+     */
+    private Uri insertProduct(Uri uri, ContentValues values) {
+        // Check for null product name
+        String name = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Product requires a name");
+        }
+        // Check for null supplier
+        String supplierName = values.getAsString(ProductContract.ProductEntry.COLUMN_SUPPLIER_NAME);
+        if (supplierName == null) {
+            throw new IllegalArgumentException("Supplier needs a name");
+        }
+        // check for positive quantity
+        Long quant = values.getAsLong(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        if (!(quant > 0)) {
+            throw new IllegalArgumentException("Quant needs to be positive");
+        }
+        // check for positive price
+        Double price = values.getAsDouble(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+        if (!(price > 0)) {
+            throw new IllegalArgumentException("Price needs to be positive");
+        }
+
+        // Get db
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        // get the id of the row of new data inserted
+        long id = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
+
+        // Check for bad insertion
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+        // Once we know the ID of the new row in the table,
+        // return the new URI with the ID appended to the end of it
+        return ContentUris.withAppendedId(uri, id);
     }
 
     /**
