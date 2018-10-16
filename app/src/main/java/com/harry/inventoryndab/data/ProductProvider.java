@@ -142,8 +142,51 @@ public class ProductProvider extends ContentProvider {
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
      */
     @Override
-    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        return 0;
+    public int update(Uri uri, ContentValues contentValues, String selection,
+                      String[] selectionArgs) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                return updateProduct(uri, contentValues, selection, selectionArgs);
+            case PRODUCTS_ID:
+                // For the PRODUCT_ID code, extract out the ID from the URI,
+                // so we know which row to update. Selection will be "_id=?" and selection
+                // arguments will be a String array containing the actual ID.
+                selection = ProductContract.ProductEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateProduct(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Update products in the database with the given content values.
+     */
+    private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME)) {
+            String name = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Product requires a name");
+            }
+        }
+        // Catch zero quant
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY)) {
+            Integer quantIn = values.getAsInteger(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+            if (quantIn == null || quantIn < 1) {
+                throw new IllegalArgumentException("Quant requires positive number");
+            }
+        }
+        // Catch no entry
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // Otherwise, get writeable database to update the data
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+
+        // Returns the number of database rows affected by the update statement
+        return database.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 
     /**
@@ -151,7 +194,22 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        // Get writeable database
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                // Delete all rows that match the selection and selection args
+                return database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+            case PRODUCTS_ID:
+                // Delete a single row given by the ID in the URI
+                selection = ProductContract.ProductEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
     }
 
     /**
@@ -159,6 +217,14 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                return ProductContract.ProductEntry.CONTENT_LIST_TYPE;
+            case PRODUCTS_ID:
+                return ProductContract.ProductEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
     }
 }
