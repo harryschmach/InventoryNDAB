@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.harry.inventoryndab.data.InventoryDbHelper;
+import com.harry.inventoryndab.data.ProductCursorAdapter;
 
 import java.net.URI;
 import java.security.Provider;
@@ -71,67 +73,19 @@ public class MainActivity extends AppCompatActivity {
                 ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER
         };
 
-        // Perform a query on the prodcut table using the Content URI
+        // Perform a query on the product table using the Content URI
         Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI,
                 projection,
                 null,
                 null,
                 null);
+        // get List to display in
+        ListView mainLV = findViewById(R.id.main_list_view);
+        // setup adapter
+        ProductCursorAdapter adapter = new ProductCursorAdapter(this, cursor);
+        // attach adapter
+        mainLV.setAdapter(adapter);
 
-        TextView displayView = findViewById(R.id.sql_table_tv);
-
-        try {
-            // Create a header in the Text View that looks like this:
-            //
-            // The products table contains <number of rows in Cursor> products.
-            // _id - name - price - quantity - supplierName - supplierPhone
-            //
-            // In the while loop below, iterate through the rows of the cursor and display
-            // the information from each column in this order.
-            displayView.setText("The product table contains " + cursor.getCount() + " products.\n\n");
-            displayView.append(ProductEntry._ID + " - " +
-                    ProductEntry.COLUMN_PRODUCT_NAME + " - " +
-                    ProductEntry.COLUMN_PRODUCT_PRICE + " - " +
-                    ProductEntry.COLUMN_PRODUCT_QUANTITY + " - " +
-                    ProductEntry.COLUMN_SUPPLIER_NAME + " - " +
-                    ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER + "\n");
-
-            // Figure out the index of each column
-            int idColumnIndex = cursor.getColumnIndex(ProductEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
-            int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
-            int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
-            int supplierNameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIER_NAME);
-            int supplierPhoneColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
-
-            // Iterate through all the returned rows in the cursor
-            while (cursor.moveToNext()) {
-                // Use that index to extract the String or Int value of the word
-                // at the current row the cursor is on.
-                int currentID = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                int currentPrice = cursor.getInt(priceColumnIndex);
-                int currentQuantity = cursor.getInt(quantityColumnIndex);
-                String currentSupplierName = cursor.getString(supplierNameColumnIndex);
-                String currentSupplierPhone = cursor.getString(supplierPhoneColumnIndex);
-
-                // Display the values from each column of the current row in the cursor in the TextView
-                displayView.append(("\n" + currentID + " - " +
-                        currentName + " - " +
-                        currentPrice + " - " +
-                        currentQuantity + " - " +
-                        currentSupplierName + " - " +
-                        currentSupplierPhone
-                ));
-            }
-        } finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
     }
 
     /**

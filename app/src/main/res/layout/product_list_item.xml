@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textSize="12sp"
+            android:text="@string/btn_text_sell_one"
             tools:text="Sell One" />
 
     </LinearLayout>

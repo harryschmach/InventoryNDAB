@@ -10,15 +10,13 @@
     tools:showIn="@layout/activity_main"
     >
 
-    <TextView
-        android:id="@+id/sql_command_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Last SQL Command Will Appear Here"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/sql_table_tv"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ListView
+        android:id="@+id/main_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/product_list_item">
+
+    </ListView>
 
     <TextView
         android:id="@+id/sql_table_tv"
@@ -27,6 +25,6 @@
         android:text="Reading of SQL Table will be here"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sql_command_tv" />
+        app:layout_constraintTop_toBottomOf="@id/main_list_view" />
 
 </android.support.constraint.ConstraintLayout>
