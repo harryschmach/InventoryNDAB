@@ -113,7 +113,7 @@ public class ProductProvider extends ContentProvider {
         }
         // check for positive quantity
         Long quant = values.getAsLong(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
-        if (!(quant > 0)) {
+        if (!(quant > -1)) {
             throw new IllegalArgumentException("Quant needs to be positive");
         }
         // check for positive price
@@ -170,10 +170,10 @@ public class ProductProvider extends ContentProvider {
                 throw new IllegalArgumentException("Product requires a name");
             }
         }
-        // Catch zero quant
+        // Catch less=than zero quant
         if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY)) {
             Integer quantIn = values.getAsInteger(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
-            if (quantIn == null || quantIn < 1) {
+            if (quantIn == null || quantIn < 0) {
                 throw new IllegalArgumentException("Quant requires positive number");
             }
         }
