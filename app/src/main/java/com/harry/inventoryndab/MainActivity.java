@@ -3,11 +3,9 @@ package com.harry.inventoryndab;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,13 +13,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.harry.inventoryndab.data.InventoryDbHelper;
 import com.harry.inventoryndab.data.ProductCursorAdapter;
-
-import java.net.URI;
-import java.security.Provider;
 
 import static com.harry.inventoryndab.data.ProductContract.*;
 
@@ -49,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         // To access our database, we instantiate our subclass of SQLiteOpenHelper
         // and pass the context, which is the current activity.
         mDbHelper = new InventoryDbHelper(this);
+
+        // Find the ListView which will be populated with the pet data
+        ListView inventoryListView = findViewById(R.id.main_list_view);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+        inventoryListView.setEmptyView(emptyView);
     }
 
     @Override
