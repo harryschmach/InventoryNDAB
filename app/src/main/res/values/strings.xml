@@ -24,4 +24,7 @@
     <string name="decrease_by_one">Decrease by One</string>
     <string name="call_supplier">Call Supplier</string>
     <string name="base_quantity">1</string>
+    <string name="unsaved_changes_dialog_msg">There are unsaved changes. Do you want to discard or stay editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Edit More</string>
 </resources>

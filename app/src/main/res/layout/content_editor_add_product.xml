@@ -202,7 +202,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/call_supplier"
+        android:id="@+id/call_supplier_btn"
         android:layout_gravity="center"
         android:text="@string/call_supplier"
         />
