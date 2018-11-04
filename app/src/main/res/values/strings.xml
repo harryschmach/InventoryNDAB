@@ -27,4 +27,5 @@
     <string name="unsaved_changes_dialog_msg">There are unsaved changes. Do you want to discard or stay editing?</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Edit More</string>
+    <string name="action_delete_existing">Delete Product</string>
 </resources>

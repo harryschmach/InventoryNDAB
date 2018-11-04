@@ -71,6 +71,10 @@ public class EditorAddProductActivity extends AppCompatActivity
         if (mCurrentProductUri == null){
             // new product!
             setTitle(getString(R.string.editor_activity_new_product));
+
+            // Dont need the "clear" option in menu... which is the whole menu...
+            invalidateOptionsMenu();
+
         }else {
             // Edit Product!
             setTitle(getString(R.string.editor_activitiy_edit_product));
@@ -233,6 +237,16 @@ public class EditorAddProductActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // If this is a new pet, hide the "Delete" menu item.
+        if (mCurrentProductUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
+        return true;
     }
 
     @Override
