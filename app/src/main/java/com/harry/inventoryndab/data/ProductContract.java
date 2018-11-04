@@ -72,7 +72,7 @@ public final class ProductContract {
         /**
          * Supplier phone number of the product.
          *
-         * Type: INTEGER
+         * Type: TEXT
          */
         public final static String COLUMN_SUPPLIER_PHONE_NUMBER = "supplier_phone_number";
 

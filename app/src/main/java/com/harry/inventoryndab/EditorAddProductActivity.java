@@ -12,10 +12,13 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import javax.xml.datatype.Duration;
 
 import static com.harry.inventoryndab.data.ProductContract.*;
 
@@ -71,18 +74,35 @@ public class EditorAddProductActivity extends AppCompatActivity
         mSupplierPhone = findViewById(R.id.et_supplier_phone);
     }
 
-    private void insertProduct(){
+    private void saveProduct(){
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
 
         String productNameString = mProductName.getText().toString().trim();
         String productPriceString = mProductPrice.getText().toString().trim();
-        double productPrice = Double.parseDouble(productPriceString);
         String productQuantString = mProductQuantity.getText().toString().trim();
-        int productQuantity = Integer.parseInt(productQuantString);
         String supplierNameString = mSupplierName.getText().toString().trim();
         String supplierPhoneString = mSupplierPhone.getText().toString().trim();
 
+        // check for empties
+        if (TextUtils.isEmpty(productNameString)){
+            Toast.makeText(this,"Product needs a name", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (TextUtils.isEmpty(productPriceString)) {
+            Toast.makeText(this, "Product needs a price", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (TextUtils.isEmpty(productQuantString)) {
+            Toast.makeText(this, "Product needs a quantity", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (TextUtils.isEmpty(supplierNameString)) {
+            Toast.makeText(this, "Product needs a supplier", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        // recast numbered entries
+        double productPrice = Double.parseDouble(productPriceString);
+        int productQuantity = Integer.parseInt(productQuantString);
         // Create a ContentValues object where column names are the keys,
         // and product attributes from the editor are the values.
         ContentValues values = new ContentValues();
@@ -92,19 +112,37 @@ public class EditorAddProductActivity extends AppCompatActivity
         values.put(ProductEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
         values.put(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhoneString);
 
-        // Insert a new row for Product in the database, returning the Uri of that new row.
-        Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
 
-        // Show a toast message depending on whether or not the insertion was successful
-        if (newUri == null) {
-            // If the new content URI is null, then there was an error with insertion.
-            Toast.makeText(this, getString(R.string.editor_insert_product_failed),
-                    Toast.LENGTH_SHORT).show();
+
+        if (mCurrentProductUri == null){
+            // new product
+            // Insert a new row for Product in the database, returning the Uri of that new row.
+            Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
+            // Show a toast message depending on whether or not the insertion was successful
+            if (newUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_save_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can toast its success!
+                Toast.makeText(this, getString(R.string.editor_save_product_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
-            // Otherwise, the insertion was successful and we can toast its success!
-            Toast.makeText(this, getString(R.string.editor_insert_product_successful),
-                    Toast.LENGTH_SHORT).show();
+            // updating existing product
+            int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+            // Show a toast message depending on whether or not the update was successful.
+            if (rowsAffected == 0) {
+                // If no rows were affected, then there was an error with the update.
+                Toast.makeText(this, getString(R.string.editor_save_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the update was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_save_product_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
+
     }
 
     @Override
@@ -122,7 +160,7 @@ public class EditorAddProductActivity extends AppCompatActivity
             // Respond to a click on the "Save" menu option
             case R.id.action_insert_editor_data:
                 // Save Product to database
-                insertProduct();
+                saveProduct();
                 // Exit activity
                 finish();
                 return true;

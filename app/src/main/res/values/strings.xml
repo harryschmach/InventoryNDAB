@@ -13,11 +13,15 @@
     <string name="supplier_phone_str_hint">Supplier Phone</string>
     <string name="action_save_data">Save</string>
     <string name="action_delete_all">Clear All</string>
-    <string name="editor_insert_product_failed">Failed to insert Product</string>
-    <string name="editor_insert_product_successful">New product inserted</string>
+    <string name="editor_save_product_failed">Failed to save Product</string>
+    <string name="editor_save_product_successful">New product saved</string>
     <string name="btn_text_sell_one">Sell One</string>
     <string name="empty_view_title_text">Nothing in Inventory</string>
     <string name="empty_view_subtitle_text">Time to Stock Up!</string>
     <string name="editor_activity_new_product">Add New Product</string>
     <string name="editor_activitiy_edit_product">Edit Product</string>
+    <string name="increase_by_one">Increase by One</string>
+    <string name="decrease_by_one">Decrease by One</string>
+    <string name="call_supplier">Call Supplier</string>
+    <string name="base_quantity">1</string>
 </resources>
