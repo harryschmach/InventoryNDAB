@@ -110,6 +110,13 @@ public class EditorAddProductActivity extends AppCompatActivity
                 incrementQuant();
             }
         });
+        callVendorbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String supplierPhoneString = mSupplierPhone.getText().toString().trim();
+                dialPhoneNumber(supplierPhoneString);
+            }
+        });
 
         mProductName.setOnTouchListener(mTouchListener);
         mProductPrice.setOnTouchListener(mTouchListener);
@@ -436,5 +443,13 @@ public class EditorAddProductActivity extends AppCompatActivity
             }
         }
         finish();
+    }
+
+    public void dialPhoneNumber(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 }
