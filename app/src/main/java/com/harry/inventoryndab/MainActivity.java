@@ -1,7 +1,11 @@
 package com.harry.inventoryndab;
 
+import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,18 +16,22 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.harry.inventoryndab.data.InventoryDbHelper;
 import com.harry.inventoryndab.data.ProductCursorAdapter;
 
+import java.net.URI;
+
 import static com.harry.inventoryndab.data.ProductContract.*;
 
-public class MainActivity extends AppCompatActivity {
-    /** Database helper that will provide us access to the database */
-    private InventoryDbHelper mDbHelper;
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private static final int PRODUCT_LOADER = 0;
+
+    ProductCursorAdapter mProductCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        mDbHelper = new InventoryDbHelper(this);
 
         // Find the ListView which will be populated with the pet data
         ListView inventoryListView = findViewById(R.id.main_list_view);
@@ -50,43 +55,33 @@ public class MainActivity extends AppCompatActivity {
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         inventoryListView.setEmptyView(emptyView);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        displayDatabaseInfo();
-    }
+        // Set cursor loader to listview
+        mProductCursorAdapter = new ProductCursorAdapter(this, null);
+        inventoryListView.setAdapter(mProductCursorAdapter);
 
-    /**
-     * Helper method to display information in the onscreen TextView about the state of
-     * the database.
-     */
-    private void displayDatabaseInfo() {
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                ProductEntry._ID,
-                ProductEntry.COLUMN_PRODUCT_NAME,
-                ProductEntry.COLUMN_PRODUCT_PRICE,
-                ProductEntry.COLUMN_PRODUCT_QUANTITY,
-                ProductEntry.COLUMN_SUPPLIER_NAME,
-                ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER
-        };
+        // OnClickListener to Prompt EditMode
+        inventoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.v(LOG_TAG, "Clicked!");
+                Intent intentEditorInEditMode = new Intent(
+                        MainActivity.this,
+                        EditorAddProductActivity.class
+                );
+                // Forge a mighty URI for the intent to carry
+                Uri currentProductURI = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
 
-        // Perform a query on the product table using the Content URI
-        Cursor cursor = getContentResolver().query(ProductEntry.CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
-        // get List to display in
-        ListView mainLV = findViewById(R.id.main_list_view);
-        // setup adapter
-        ProductCursorAdapter adapter = new ProductCursorAdapter(this, cursor);
-        // attach adapter
-        mainLV.setAdapter(adapter);
+                // Add the URI to the intent
+                intentEditorInEditMode.setData(currentProductURI);
 
+                //Launch into editor
+                startActivity(intentEditorInEditMode);
+            }
+        });
+
+        // Load stuff with loader
+        getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
 
     /**
@@ -133,10 +128,38 @@ public class MainActivity extends AppCompatActivity {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insertDummyProduct();
-                displayDatabaseInfo();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // Make projection from table
+        String[] projection = {
+                ProductEntry._ID,
+                ProductEntry.COLUMN_PRODUCT_NAME,
+                ProductEntry.COLUMN_PRODUCT_PRICE,
+                ProductEntry.COLUMN_PRODUCT_QUANTITY
+        };
+        return new CursorLoader(
+                this,
+                ProductEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        // Update Cursor with data
+        mProductCursorAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mProductCursorAdapter.swapCursor(null);
     }
 }

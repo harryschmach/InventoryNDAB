@@ -79,6 +79,8 @@ public class ProductProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 
@@ -133,6 +135,10 @@ public class ProductProvider extends ContentProvider {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
             return null;
         }
+
+        // Notify URI
+        getContext().getContentResolver().notifyChange(uri,null);
+
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it
         return ContentUris.withAppendedId(uri, id);
@@ -186,7 +192,11 @@ public class ProductProvider extends ContentProvider {
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
 
         // Returns the number of database rows affected by the update statement
-        return database.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+        int numUpdated = database.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (numUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return numUpdated;
     }
 
     /**
@@ -196,20 +206,29 @@ public class ProductProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Get writeable database
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
-
+        int numDeleted;
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case PRODUCTS:
                 // Delete all rows that match the selection and selection args
-                return database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                numDeleted = database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             case PRODUCTS_ID:
                 // Delete a single row given by the ID in the URI
                 selection = ProductContract.ProductEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                // Returns the number of database rows affected by the update statement
+                numDeleted = database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
+
         }
+        if (numDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return numDeleted;
+
     }
 
     /**

@@ -21,7 +21,6 @@
         </activity>
         <activity
             android:name=".EditorAddProductActivity"
-            android:label="@string/title_activity_editor_add_product"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

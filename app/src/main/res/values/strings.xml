@@ -18,4 +18,6 @@
     <string name="btn_text_sell_one">Sell One</string>
     <string name="empty_view_title_text">Nothing in Inventory</string>
     <string name="empty_view_subtitle_text">Time to Stock Up!</string>
+    <string name="editor_activity_new_product">Add New Product</string>
+    <string name="editor_activitiy_edit_product">Edit Product</string>
 </resources>

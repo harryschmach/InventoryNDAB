@@ -2,6 +2,7 @@ package com.harry.inventoryndab.data;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,5 +75,21 @@ public class ProductCursorAdapter extends CursorAdapter {
         tvProductName.setText(pName);
         tvProductPrice.setText(pPriceToDisplay);
         tvProductQuant.setText(String.valueOf(pQuant));
+
+        // set the button up
+        btnProductSell.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sellOneItem();
+                    }
+                }
+        );
     }
+
+    private void sellOneItem(){
+        Log.v("SellOneItem", "Register button click");
+
+    }
+
 }
