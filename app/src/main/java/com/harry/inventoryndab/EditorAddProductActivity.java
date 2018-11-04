@@ -13,8 +13,10 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,6 +36,14 @@ public class EditorAddProductActivity extends AppCompatActivity
     EditText mSupplierName;
     EditText mSupplierPhone;
 
+    /**
+     * Instantiate the buttons
+     */
+    Button incQuantbtn;
+    Button decQuantbtn;
+    Button callVendorbtn;
+
+
     // Get the loader
     private static final int EXISTING_LOADER = 0;
     /** Content URI for the existing product (null if it's a new product) */
@@ -49,7 +59,6 @@ public class EditorAddProductActivity extends AppCompatActivity
         // Get the intent
         Intent launcherIntent = getIntent();
         mCurrentProductUri = launcherIntent.getData();
-
         // Determine if we have found ourselves here with a new product or editing an old one
         if (mCurrentProductUri == null){
             // new product!
@@ -72,6 +81,10 @@ public class EditorAddProductActivity extends AppCompatActivity
         mProductQuantity = findViewById(R.id.et_product_quant);
         mSupplierName = findViewById(R.id.et_supplier_name);
         mSupplierPhone = findViewById(R.id.et_supplier_phone);
+
+        /**
+         * Give the buttons their functions
+         */
     }
 
     private void saveProduct(){
@@ -212,13 +225,13 @@ public class EditorAddProductActivity extends AppCompatActivity
             int price = cursor.getInt(priceColumnIndex);
             int quant = cursor.getInt(quantColumnIndex);
             String supplierName = cursor.getString(supplierNameColumnIndex);
-            int supplierPhone = cursor.getInt(supplierPhoneColumnIndex);
+            String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
             // Update the views on the screen with the values from the database
             mProductName.setText(name);
             mProductPrice.setText(Integer.toString(price));
             mProductQuantity.setText(Integer.toString(quant));
             mSupplierName.setText(supplierName);
-            mSupplierPhone.setText(Integer.toString(supplierPhone));
+            mSupplierPhone.setText(supplierPhone);
 
         }
     }
@@ -231,5 +244,18 @@ public class EditorAddProductActivity extends AppCompatActivity
         mProductQuantity.setText("");
         mSupplierName.setText("");
         mSupplierPhone.setText("");
+    }
+
+    private void incrementQuant(){
+        String strQuant = mProductQuantity.getText().toString();
+        int currentQuant = Integer.parseInt(strQuant);
+        int newQuant = currentQuant + 1;
+        mProductQuantity.setText(Integer.toString(newQuant));
+    }
+    private void decreaseQuant(){
+        String strQuant = mProductQuantity.getText().toString();
+        int currentQuant = Integer.parseInt(strQuant);
+        int newQuant = currentQuant - 1;
+        mProductQuantity.setText(Integer.toString(newQuant));
     }
 }

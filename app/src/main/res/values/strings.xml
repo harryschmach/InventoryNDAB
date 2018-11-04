@@ -14,7 +14,7 @@
     <string name="action_save_data">Save</string>
     <string name="action_delete_all">Clear All</string>
     <string name="editor_save_product_failed">Failed to save Product</string>
-    <string name="editor_save_product_successful">New product saved</string>
+    <string name="editor_save_product_successful">Product saved</string>
     <string name="btn_text_sell_one">Sell One</string>
     <string name="empty_view_title_text">Nothing in Inventory</string>
     <string name="empty_view_subtitle_text">Time to Stock Up!</string>
