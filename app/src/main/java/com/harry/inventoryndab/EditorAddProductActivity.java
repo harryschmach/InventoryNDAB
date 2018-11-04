@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -49,6 +51,10 @@ public class EditorAddProductActivity extends AppCompatActivity
     /** Content URI for the existing product (null if it's a new product) */
     private Uri mCurrentProductUri;
 
+    // Boolean for change
+    private boolean mContentChanged = false;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,17 +80,39 @@ public class EditorAddProductActivity extends AppCompatActivity
 
 
         /**
-         * Cast variables of edit text fields
+         * Cast variables of widgets
          */
         mProductName = findViewById(R.id.et_product_name);
         mProductPrice = findViewById(R.id.et_product_price);
         mProductQuantity = findViewById(R.id.et_product_quant);
         mSupplierName = findViewById(R.id.et_supplier_name);
         mSupplierPhone = findViewById(R.id.et_supplier_phone);
+        decQuantbtn = findViewById(R.id.decrease_quant_btn);
+        incQuantbtn = findViewById(R.id.increase_quant_btn);
 
         /**
          * Give the buttons their functions
          */
+        decQuantbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                decreaseQuant();
+            }
+        });
+        incQuantbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                incrementQuant();
+            }
+        });
+
+        mProductName.setOnTouchListener(mTouchListener);
+        mProductPrice.setOnTouchListener(mTouchListener);
+        mProductQuantity.setOnTouchListener(mTouchListener);
+        mSupplierName.setOnTouchListener(mTouchListener);
+        mSupplierPhone.setOnTouchListener(mTouchListener);
+        decQuantbtn.setOnTouchListener(mTouchListener);
+        incQuantbtn.setOnTouchListener(mTouchListener);
     }
 
     private void saveProduct(){
@@ -258,4 +286,16 @@ public class EditorAddProductActivity extends AppCompatActivity
         int newQuant = currentQuant - 1;
         mProductQuantity.setText(Integer.toString(newQuant));
     }
+
+    // OnTouchListener that listens for any user touches on a View, implying that they are modifying
+    // the view, and we change the mContentChanged boolean to true.
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mContentChanged = true;
+            Log.v("EditorActivity", "Something changed!! AHHH!!");
+            return false;
+        }
+    };
 }

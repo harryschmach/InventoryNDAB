@@ -118,12 +118,12 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/decrease_quant"
+            android:id="@+id/decrease_quant_btn"
             android:text="@string/decrease_by_one"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/increase_quant"
+            android:id="@+id/increase_quant_btn"
             android:text="@string/increase_by_one"/>
     </LinearLayout>
 
