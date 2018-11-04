@@ -20,8 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.harry.inventoryndab.data.ProductCursorAdapter;
-
 import static com.harry.inventoryndab.data.ProductContract.*;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {

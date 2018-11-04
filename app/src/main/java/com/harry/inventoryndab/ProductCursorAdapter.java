@@ -1,7 +1,9 @@
-package com.harry.inventoryndab.data;
+package com.harry.inventoryndab;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.harry.inventoryndab.R;
+import com.harry.inventoryndab.data.ProductContract;
 
 import org.w3c.dom.Text;
 
@@ -41,21 +44,21 @@ public class ProductCursorAdapter extends CursorAdapter {
      * list item layout. For example, the name for the current product can be set on the name TextView
      * in the list item layout.
      *
-     * @param view    Existing view, returned earlier by newView() method
+     * @param v    Existing view, returned earlier by newView() method
      * @param context app context
      * @param cursor  The cursor from which to get the data. The cursor is already moved to the
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(final View v, Context context, Cursor cursor) {
         // Get the name field
-        TextView tvProductName = view.findViewById(R.id.product_name_list_item);
+        TextView tvProductName = v.findViewById(R.id.product_name_list_item);
         // Get the Price field
-        TextView tvProductPrice = view.findViewById(R.id.product_price_list_item);
+        TextView tvProductPrice = v.findViewById(R.id.product_price_list_item);
         // Get the quantity field
-        TextView tvProductQuant = view.findViewById(R.id.product_quant_list_item);
+        TextView tvProductQuant = v.findViewById(R.id.product_quant_list_item);
         // Get the sell button
-        Button btnProductSell = view.findViewById(R.id.product_sale_btn_list_item);
+        Button btnProductSell = v.findViewById(R.id.product_sale_btn_list_item);
 
         // Get values from the cursor
         // Get name
@@ -64,6 +67,8 @@ public class ProductCursorAdapter extends CursorAdapter {
         Integer pPrice = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE));
         // Get quant
         Integer pQuant = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY));
+        // Get ID
+        final Integer pID = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry._ID));
 
         // Converting the integer price to cents, laborious
         float floatPrice = pPrice;
@@ -81,15 +86,25 @@ public class ProductCursorAdapter extends CursorAdapter {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        sellOneItem();
+                        sellOneItem(v);
                     }
                 }
         );
     }
 
-    private void sellOneItem(){
+    private void sellOneItem(View view){
         Log.v("SellOneItem", "Register button click");
-
+        TextView tvProductQuant = view.findViewById(R.id.product_quant_list_item);
+        String strQuant = tvProductQuant.getText().toString();
+        int currentQuant = Integer.parseInt(strQuant);
+        int newQuant;
+        // No negative inventory!
+        if (currentQuant < 1){
+            newQuant = 0;
+        }else {
+            newQuant = currentQuant - 1;
+        }
+        tvProductQuant.setText(String.valueOf(newQuant));
     }
 
 }
