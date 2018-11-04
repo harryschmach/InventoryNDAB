@@ -28,4 +28,7 @@
     <string name="discard">Discard</string>
     <string name="keep_editing">Edit More</string>
     <string name="action_delete_existing">Delete Product</string>
+    <string name="delete_dialog_msg">Delete Product?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

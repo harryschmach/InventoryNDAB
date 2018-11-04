@@ -18,11 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.harry.inventoryndab.data.InventoryDbHelper;
 import com.harry.inventoryndab.data.ProductCursorAdapter;
-
-import java.net.URI;
 
 import static com.harry.inventoryndab.data.ProductContract.*;
 
@@ -129,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.action_insert_dummy_data:
                 insertDummyProduct();
                 return true;
+            case R.id.action_delete_all_entries:
+                deleteAllProducts();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -161,5 +162,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mProductCursorAdapter.swapCursor(null);
+    }
+
+    /**
+     * Perform the deletion of the products in the database.
+     */
+    private void deleteAllProducts() {
+        // Need URI that corresponds to all entries
+        Uri allProductsURI = ProductEntry.CONTENT_URI;
+        // Get content resolver to do our dirty work
+        int rowsDeleted = getContentResolver().delete(allProductsURI, null, null);
+        Log.v(LOG_TAG, rowsDeleted + " ROWS DELETED");
+        // Show a toast message depending on whether or not the delete was successful.
+        if (rowsDeleted == 0) {
+            // If no rows were deleted, then there was an error with the delete.
+            Toast.makeText(this, "Items Not Deleted. Weird.", Toast.LENGTH_LONG).show();
+        } else {
+            // Otherwise, the delete was successful and we can display a toast.
+            Toast.makeText(this, "All is Deleted", Toast.LENGTH_LONG).show();
+        }
     }
 }
