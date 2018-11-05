@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Inventory NDAB</string>
     <string name="action_settings">Settings</string>
-    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="action_insert_dummy_data">Insert Known Book</string>
     <string name="action_delete_all_entries">Delete All Entries</string>
     <string name="product_name_str_hint">Product Name</string>
     <string name="product_information_str_label">Product Information</string>
-    <string name="product_price_str_hint">Product Price</string>
+    <string name="product_price_str_hint">Product Price in Cents</string>
     <string name="product_quantity_str_hint">Product Quantity</string>
     <string name="supplier_information_str_label">Supplier Information</string>
     <string name="supplier_name_str_hint">Supplier Name</string>
@@ -13,4 +13,22 @@
     <string name="supplier_phone_str_hint">Supplier Phone</string>
     <string name="action_save_data">Save</string>
     <string name="action_delete_all">Clear All</string>
+    <string name="editor_save_product_failed">Failed to save Product</string>
+    <string name="editor_save_product_successful">Product saved</string>
+    <string name="btn_text_sell_one">Sell One</string>
+    <string name="empty_view_title_text">Nothing in Inventory</string>
+    <string name="empty_view_subtitle_text">Time to Stock Up!</string>
+    <string name="editor_activity_new_product">Add New Product</string>
+    <string name="editor_activitiy_edit_product">Edit Product</string>
+    <string name="increase_by_one">Increase by One</string>
+    <string name="decrease_by_one">Decrease by One</string>
+    <string name="call_supplier">Call Supplier</string>
+    <string name="base_quantity">1</string>
+    <string name="unsaved_changes_dialog_msg">There are unsaved changes. Do you want to discard or stay editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Edit More</string>
+    <string name="action_delete_existing">Delete Product</string>
+    <string name="delete_dialog_msg">Delete Product?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>
