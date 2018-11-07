@@ -9,8 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
+import android.net.Uri;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -127,7 +127,7 @@ public class EditorAddProductActivity extends AppCompatActivity
         incQuantbtn.setOnTouchListener(mTouchListener);
     }
 
-    private void saveProduct(){
+    private boolean saveProduct(){
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
 
@@ -140,16 +140,19 @@ public class EditorAddProductActivity extends AppCompatActivity
         // check for empties
         if (TextUtils.isEmpty(productNameString)){
             Toast.makeText(this,"Product needs a name", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }else if (TextUtils.isEmpty(productPriceString)) {
             Toast.makeText(this, "Product needs a price", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }else if (TextUtils.isEmpty(productQuantString)) {
             Toast.makeText(this, "Product needs a quantity", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }else if (TextUtils.isEmpty(supplierNameString)) {
             Toast.makeText(this, "Product needs a supplier", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
+        }else if (TextUtils.isEmpty(supplierPhoneString)) {
+            Toast.makeText(this, "Product needs a supplier phone number", Toast.LENGTH_SHORT).show();
+            return false;
         }
 
 
@@ -195,6 +198,7 @@ public class EditorAddProductActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT).show();
             }
         }
+        return true;
 
     }
 
@@ -222,9 +226,11 @@ public class EditorAddProductActivity extends AppCompatActivity
             // Respond to a click on the "Save" menu option
             case R.id.action_insert_editor_data:
                 // Save Product to database
-                saveProduct();
+                boolean successSave = saveProduct();
                 // Exit activity
-                finish();
+                if (successSave){
+                    finish();
+                }
                 return true;
             // Delete option
             case R.id.action_delete_in_editor:
@@ -294,6 +300,12 @@ public class EditorAddProductActivity extends AppCompatActivity
             int quantColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
             int supplierNameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIER_NAME);
             int supplierPhoneColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+            //debug
+            Log.v("load name Index", String.valueOf(nameColumnIndex));
+            Log.v("load price Index", String.valueOf(priceColumnIndex));
+            Log.v("load quant Index", String.valueOf(quantColumnIndex));
+            Log.v("load sName Index", String.valueOf(supplierNameColumnIndex));
+            Log.v("load sNum Index", String.valueOf(supplierPhoneColumnIndex));
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             int price = cursor.getInt(priceColumnIndex);

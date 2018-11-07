@@ -1,6 +1,7 @@
 package com.harry.inventoryndab;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -50,26 +51,50 @@ public class ProductCursorAdapter extends CursorAdapter {
      *                correct row.
      */
     @Override
-    public void bindView(final View v, Context context, Cursor cursor) {
+    public void bindView(final View v, final Context context, Cursor cursor) {
         // Get the name field
         TextView tvProductName = v.findViewById(R.id.product_name_list_item);
         // Get the Price field
         TextView tvProductPrice = v.findViewById(R.id.product_price_list_item);
         // Get the quantity field
-        TextView tvProductQuant = v.findViewById(R.id.product_quant_list_item);
+        final TextView tvProductQuant = v.findViewById(R.id.product_quant_list_item);
         // Get the sell button
         Button btnProductSell = v.findViewById(R.id.product_sale_btn_list_item);
 
         // Get values from the cursor
-        // Get name
-        String pName = cursor.getString(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME));
-        // Get price
-        Integer pPrice = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE));
-        // Get quant
-        Integer pQuant = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY));
         // Get ID
         final Integer pID = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry._ID));
+        // Get name
+        Log.v("id val: ", String.valueOf(pID));
+        Log.v("cursor size: ", String.valueOf(cursor.getColumnCount()));
 
+
+//        String pName = cursor.getString(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME));
+//        // Get price
+//        final Integer pPrice = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE));
+//        // Get quant
+//        Integer pQuant = cursor.getInt(cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY));
+
+        // Get supplier name & number
+        int nameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+        int priceColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+        int quantColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        int supplierNameColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_SUPPLIER_NAME);
+        int supplierPhoneColumnIndex = cursor.getColumnIndex(ProductContract.ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
+
+        Log.v("name Index", String.valueOf(nameColumnIndex));
+        Log.v("price Index", String.valueOf(priceColumnIndex));
+        Log.v("quant Index", String.valueOf(quantColumnIndex));
+        Log.v("sName Index", String.valueOf(supplierNameColumnIndex));
+        Log.v("sNum Index", String.valueOf(supplierPhoneColumnIndex));
+        // Extract out the value from the Cursor for the given column index
+        final String pName= cursor.getString(nameColumnIndex);
+        final Integer pPrice = cursor.getInt(priceColumnIndex);
+        int pQuant = cursor.getInt(quantColumnIndex);
+        final String supplierName = cursor.getString(supplierNameColumnIndex);
+        final String supplierPhone = cursor.getString(supplierPhoneColumnIndex);
+
+        // Update the views on the screen with the values from the database
         // Converting the integer price to cents, laborious
         float floatPrice = pPrice;
         float pPriceInDecimal = floatPrice / 100;
@@ -86,25 +111,34 @@ public class ProductCursorAdapter extends CursorAdapter {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        sellOneItem(v);
+                        Log.v("SellOneItem", "Register button click");
+                        String strQuant = tvProductQuant.getText().toString();
+                        int currentQuant = Integer.parseInt(strQuant);
+                        int newQuant;
+                        // No negative inventory!
+                        if (currentQuant < 1){
+                            newQuant = 0;
+                        }else {
+                            newQuant = currentQuant - 1;
+                        }
+                        // Create a URI that the resolver requires:
+                        Uri currentProductURI = ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, pID);
+                        // Create a Content values to update the value with
+                        ContentValues values = new ContentValues();
+                        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME, pName);
+                        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, pPrice);
+                        // This will change if the
+                        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, newQuant);
+                        values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER_NAME, supplierName);
+                        values.put(ProductContract.ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, supplierPhone);
+                        context.getContentResolver().update(currentProductURI, values, null, null);
                     }
                 }
         );
     }
 
-    private void sellOneItem(View view){
-        Log.v("SellOneItem", "Register button click");
-        TextView tvProductQuant = view.findViewById(R.id.product_quant_list_item);
-        String strQuant = tvProductQuant.getText().toString();
-        int currentQuant = Integer.parseInt(strQuant);
-        int newQuant;
-        // No negative inventory!
-        if (currentQuant < 1){
-            newQuant = 0;
-        }else {
-            newQuant = currentQuant - 1;
-        }
-        tvProductQuant.setText(String.valueOf(newQuant));
+    private void sellOneItem(View view, Context context){
+
     }
 
 }
